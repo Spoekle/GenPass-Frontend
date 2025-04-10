@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, MotionStyle } from 'framer-motion';
 import logo from '/src/images/logo_500px.png';
 import { FaGithub } from 'react-icons/fa';
 
 const NavBar = () => {
     const navRef = useRef<HTMLDivElement>(null);
-    const [underlineStyle, setUnderlineStyle] = useState<React.CSSProperties>({});
+    const [underlineStyle, setUnderlineStyle] = useState<MotionStyle>({});
     const location = useLocation();
     const currentPath = location.pathname;
 
@@ -95,7 +95,7 @@ const NavBar = () => {
                     
                     <motion.div 
                         className="absolute bottom-0"
-                        animate={underlineStyle}
+                        style={underlineStyle}
                         transition={{ type: "spring", stiffness: 300, damping: 30 }}
                     />
                 </div>
