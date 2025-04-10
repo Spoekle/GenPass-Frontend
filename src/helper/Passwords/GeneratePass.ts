@@ -1,4 +1,5 @@
 import * as standardOptions from './options/StandardOptions';
+import * as api from '../../services/api';
 
 export interface Option {
     option: string;
@@ -10,7 +11,49 @@ export const getCustomOptions = (): Option[] => {
     return savedOptions ? JSON.parse(savedOptions) : [];
 };
 
-export const getStandardOptions = (): Option[] => {
+// Updated to use backend API with local cache
+export const getStandardOptions = async (): Promise<Option[]> => {
+    // Try to get cached options first
+    const cachedOptions = localStorage.getItem('standardPasswordOptions');
+    const cacheTimestamp = localStorage.getItem('standardOptionsTimestamp');
+    const cacheAge = cacheTimestamp ? Date.now() - parseInt(cacheTimestamp) : Infinity;
+    
+    // Cache is valid for 24 hours (86400000 ms)
+    if (cachedOptions && cacheAge < 86400000) {
+        try {
+            return JSON.parse(cachedOptions);
+        } catch (e) {
+            console.error('Error parsing cached options:', e);
+        }
+    }
+    
+    // If no cache or expired, fetch from API
+    try {
+        const options = await api.getStandardOptions();
+        if (options && options.length > 0) {
+            // Update cache
+            localStorage.setItem('standardPasswordOptions', JSON.stringify(options));
+            localStorage.setItem('standardOptionsTimestamp', Date.now().toString());
+            return options;
+        }
+    } catch (error) {
+        console.error('Error fetching standard options from API:', error);
+    }
+    
+    // Fallback to the placeholder array if API call fails
+    return standardOptions.standardOptions as Option[];
+};
+
+// For synchronous access to avoid breaking existing code
+export const getStandardOptionsSync = (): Option[] => {
+    const cachedOptions = localStorage.getItem('standardPasswordOptions');
+    if (cachedOptions) {
+        try {
+            return JSON.parse(cachedOptions);
+        } catch (e) {
+            console.error('Error parsing cached options:', e);
+        }
+    }
     return standardOptions.standardOptions as Option[];
 };
 

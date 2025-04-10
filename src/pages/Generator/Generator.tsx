@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import {
+    getStandardOptionsSync,
     getStandardOptions,
     getCustomOptions,
     Option
@@ -12,7 +13,7 @@ import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import CustomCheckbox from './components/CustomCheckbox';
 import { useAlert, AlertProvider } from './components/AlertContext';
-import { FaShieldAlt, FaKey, FaLock, FaInfoCircle, FaChevronDown, FaChevronUp } from 'react-icons/fa';
+import { FaShieldAlt, FaKey, FaLock, FaInfoCircle, FaChevronDown, FaChevronUp, FaSync } from 'react-icons/fa';
 import { AnimatePresence } from 'framer-motion';
 
 // Animation variants for staggered animations
@@ -59,8 +60,50 @@ const Generator = () => {
     const [isGenerating, setIsGenerating] = useState(false);
     const [showHowItWorks, setShowHowItWorks] = useState(false);
     const [showSecurity, setShowSecurity] = useState(false);
+    const [isLoadingStandardOptions, setIsLoadingStandardOptions] = useState(false);
+    const [standardOptionsList, setStandardOptionsList] = useState<Option[]>([]);
 
     const { addAlert } = useAlert();
+
+    // Fetch standard options on component mount
+    useEffect(() => {
+        const fetchStandardOptions = async () => {
+            setIsLoadingStandardOptions(true);
+            try {
+                const options = await getStandardOptions();
+                setStandardOptionsList(options);
+                addAlert('Word list updated from server', 'success');
+            } catch (error) {
+                console.error('Error loading standard options:', error);
+                // Fall back to sync options
+                setStandardOptionsList(getStandardOptionsSync());
+                addAlert('Using cached word list', 'alert');
+            } finally {
+                setIsLoadingStandardOptions(false);
+            }
+        };
+        
+        fetchStandardOptions();
+    }, []);
+    
+    // Refresh standard options manually
+    const refreshStandardOptions = async () => {
+        setIsLoadingStandardOptions(true);
+        try {
+            // Clear cache to force refresh
+            localStorage.removeItem('standardPasswordOptions');
+            localStorage.removeItem('standardOptionsTimestamp');
+            
+            const options = await getStandardOptions();
+            setStandardOptionsList(options);
+            addAlert('Word list refreshed from server', 'success');
+        } catch (error) {
+            console.error('Error refreshing standard options:', error);
+            addAlert('Failed to refresh word list', 'error');
+        } finally {
+            setIsLoadingStandardOptions(false);
+        }
+    };
 
     useEffect(() => {
         const opts = { numOptions, passwordLength, segmentCount, useSegments, useCustomList, useDefaultList, replaceChars, isAdvanced, includeNumbers, includeSymbols, includeUppercase, passwordAmount };
@@ -84,7 +127,7 @@ const Generator = () => {
             } else {
                 let selectedOptions: Option[] = [];
                 if (useDefaultList) {
-                    selectedOptions = [...selectedOptions, ...getStandardOptions()];
+                    selectedOptions = [...selectedOptions, ...standardOptionsList];
                 }
                 if (useCustomList) {
                     selectedOptions = [...selectedOptions, ...getCustomOptions()];
@@ -209,12 +252,28 @@ const Generator = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {/* Generator Section */}
                 <motion.div variants={itemVariants} className="glass-card shadow-xl">
-                    <motion.h2 
-                        className="text-3xl font-bold mb-6 text-white"
-                        whileHover={{ scale: 1.02 }}
-                    >
-                        Password Generator
-                    </motion.h2>
+                    <div className="flex justify-between items-center mb-6">
+                        <motion.h2 
+                            className="text-3xl font-bold text-white"
+                            whileHover={{ scale: 1.02 }}
+                        >
+                            Password Generator
+                        </motion.h2>
+                        
+                        {!isAdvanced && useDefaultList && (
+                            <motion.button
+                                onClick={refreshStandardOptions}
+                                className="flex items-center px-3 py-2 bg-indigo-500/20 hover:bg-indigo-500/30 rounded-lg text-white"
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                                disabled={isLoadingStandardOptions}
+                                title="Refresh word list from server"
+                            >
+                                <FaSync className={`${isLoadingStandardOptions ? 'animate-spin' : ''} mr-2`} /> 
+                                Refresh Words
+                            </motion.button>
+                        )}
+                    </div>
                     
                     {isAdvanced ? (
                         <Button 
