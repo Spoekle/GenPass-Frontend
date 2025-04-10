@@ -1,0 +1,148 @@
+/* Glass Morphism Effects - Minimalist Dark Theme */
+.glass {
+  background-color: rgba(23, 23, 23, 0.6);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+}
+
+.glass-dark {
+  background-color: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+}
+
+.glass-card {
+  background-color: rgba(23, 23, 23, 0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.glass-card:hover {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+}
+
+.glass-button {
+  backdrop-filter: blur(4px);
+  background-color: rgba(38, 38, 38, 0.7);
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  color: white;
+}
+
+.glass-button:hover {
+  background-color: rgba(64, 64, 64, 0.7);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.glass-button:active {
+  transform: scale(0.95);
+}
+
+.glass-button-colored {
+  backdrop-filter: blur(4px);
+  background-color: rgba(79, 70, 229, 0.2);
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(79, 70, 229, 0.3);
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.glass-button-colored:hover {
+  background-color: rgba(79, 70, 229, 0.3);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.glass-button-colored:active {
+  transform: scale(0.95);
+}
+
+/* Animated gradient background - Subtle Dark Mode */
+.animated-gradient {
+  background: linear-gradient(-45deg, #1e1e1e, #121212, #0f0f0f);
+  background-size: 400% 400%;
+  animation: gradient-xy 15s ease infinite;
+}
+
+@keyframes gradient-xy {
+  0%, 100% {
+    background-position: 0% 0%;
+  }
+  25% {
+    background-position: 100% 0%;
+  }
+  50% {
+    background-position: 100% 100%;
+  }
+  75% {
+    background-position: 0% 100%;
+  }
+}
+
+/* Modern form element styling */
+.glass-input {
+  background-color: rgba(38, 38, 38, 0.7);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  color: white;
+}
+
+.glass-input::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.glass-input:focus {
+  outline: none;
+  border-color: transparent;
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.3);
+}
+
+.glass-select {
+  background-color: rgba(38, 38, 38, 0.7);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  color: white;
+}
+
+.glass-select:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.3);
+  border-color: transparent;
+}
+
+.glass-slider {
+  background-color: rgba(38, 38, 38, 0.7);
+  backdrop-filter: blur(4px);
+  border-radius: 9999px;
+  height: 0.5rem;
+}
+
+/* Subtle ambient lighting effect */
+.ambient-light {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  transition: all 0.3s ease;
+  background: radial-gradient(
+    600px circle at var(--x) var(--y),
+    rgba(79, 70, 229, 0.06),
+    transparent 40%
+  );
+}
